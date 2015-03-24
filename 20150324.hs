@@ -1,3 +1,4 @@
+-- CODIGO ABAIXO = TRABALHO
 -- MERGESORT
 
 -- Complexity: O(n)
@@ -80,3 +81,92 @@ myDrop' i n len ls
 	| i >= n && i < len = (head ls):(myDrop' (i+1) n len (tail ls))
 	| i < n = myDrop' (i+1) n len (tail ls)
 	| otherwise = []
+
+-- CODIGO ABAIXO: EXERICICIOS DA AULA
+menorMaior :: Int -> Int -> Int -> (Int, Int)
+menorMaior a b c = (menor a (menor b c), maior a (maior b c) )
+
+menor :: Int -> Int -> Int
+menor a b
+	| a > b = b
+	| otherwise = a
+
+maior :: Int -> Int -> Int
+maior a b
+	| a > b = a
+	| otherwise = b
+
+interm :: Int -> Int -> Int -> Int
+interm a b c
+	| a <= b && b <= c = b
+	| a <= c && c <= b = c
+	| b <= a && a <= c = a
+	| b <= c && c <= a = c
+	| c <= a && a <= b = a
+	| c <= b && b <= a = b
+
+ordenaTripla :: (Int, Int, Int) -> (Int, Int, Int)
+ordenaTripla (a,b,c) = (menor a (menor b c), interm a b c, maior a (maior b c))
+
+type Ponto = (Float, Float)
+type Reta = (Ponto, Ponto)
+
+getX :: Ponto -> Float
+getX (x,y) = x
+
+getY :: Ponto -> Float
+getY (x,y) = y
+
+isVertical :: Reta -> Bool
+isVertical (p1, p2) = getX p1 == getX p2
+
+pontoY :: Float -> Reta -> Float
+pontoY x ((x1,y1), (x2,y2)) = ((y2-y1)/(x2-x1))*x
+
+type Pessoa = String
+type Livro = String
+type BancoDados = [(Pessoa, String)]
+
+baseExemplo :: BancoDados
+baseExemplo =  [("Sergio","O Senhor dos Aneis"),("Andre","Duna"), ("Fernando","Jonathan Strange & Mr.Norrell"),  ("Fernando","A Game of Thrones")]
+
+-- livros emprestados
+
+livros :: BancoDados -> Pessoa -> [Livro]
+livros [] p = []
+livros ((pessoa,livro):t) p
+	| pessoa == p = livro:livros t p
+	| otherwise = livros t p
+
+emprestimos :: BancoDados -> Livro -> [Pessoa]
+emprestimos [] l = []
+emprestimos ((pessoa,livro):t) l
+	| livro == l = pessoa:emprestimos t l
+	| otherwise = emprestimos t l
+
+emprestado :: BancoDados -> Livro -> Bool
+emprestado [] l = False
+emprestado ((pessoa,livro):t) l
+	| livro == l = True
+	| otherwise = emprestado t l
+
+
+qtdEmprestimos :: BancoDados -> Pessoa -> Int
+qtdEmprestimos [] p = 0
+qtdEmprestimos ((pessoa,livro):t) p
+	| pessoa == p = 1 + qtdEmprestimos t p
+	| otherwise = qtdEmprestimos t p
+
+emprestar :: BancoDados -> Pessoa -> Livro -> BancoDados
+emprestar bd p l
+	| not (emprestado bd l) = bd ++ [(p,l)]
+	| otherwise = bd
+
+devolver :: BancoDados -> Pessoa -> Livro -> BancoDados
+devolver [] p l = []
+devolver ((pessoa, livro):t) p l
+	| pessoa == p && livro == l = t
+	| otherwise = (pessoa, livro):(devolver t p l)
+
+membro :: [Int] -> Int -> Bool
+membro ls m = (length [x | x <- ls, x == m]) > 0
