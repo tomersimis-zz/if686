@@ -132,41 +132,61 @@ baseExemplo =  [("Sergio","O Senhor dos Aneis"),("Andre","Duna"), ("Fernando","J
 
 -- livros emprestados
 
-livros :: BancoDados -> Pessoa -> [Livro]
-livros [] p = []
-livros ((pessoa,livro):t) p
-	| pessoa == p = livro:livros t p
-	| otherwise = livros t p
+--livros :: BancoDados -> Pessoa -> [Livro]
+--livros [] p = []
+--livros ((pessoa,livro):t) p
+--	| pessoa == p = livro:livros t p
+--	| otherwise = livros t p
 
-emprestimos :: BancoDados -> Livro -> [Pessoa]
-emprestimos [] l = []
-emprestimos ((pessoa,livro):t) l
-	| livro == l = pessoa:emprestimos t l
-	| otherwise = emprestimos t l
+--emprestimos :: BancoDados -> Livro -> [Pessoa]
+--emprestimos [] l = []
+--emprestimos ((pessoa,livro):t) l
+--	| livro == l = pessoa:emprestimos t l
+--	| otherwise = emprestimos t l
 
-emprestado :: BancoDados -> Livro -> Bool
-emprestado [] l = False
-emprestado ((pessoa,livro):t) l
-	| livro == l = True
-	| otherwise = emprestado t l
+--emprestado :: BancoDados -> Livro -> Bool
+--emprestado [] l = False
+--emprestado ((pessoa,livro):t) l
+--	| livro == l = True
+--	| otherwise = emprestado t l
 
 
-qtdEmprestimos :: BancoDados -> Pessoa -> Int
-qtdEmprestimos [] p = 0
-qtdEmprestimos ((pessoa,livro):t) p
-	| pessoa == p = 1 + qtdEmprestimos t p
-	| otherwise = qtdEmprestimos t p
+--qtdEmprestimos :: BancoDados -> Pessoa -> Int
+--qtdEmprestimos [] p = 0
+--qtdEmprestimos ((pessoa,livro):t) p
+--	| pessoa == p = 1 + qtdEmprestimos t p
+--	| otherwise = qtdEmprestimos t p
 
 emprestar :: BancoDados -> Pessoa -> Livro -> BancoDados
 emprestar bd p l
 	| not (emprestado bd l) = bd ++ [(p,l)]
 	| otherwise = bd
 
-devolver :: BancoDados -> Pessoa -> Livro -> BancoDados
-devolver [] p l = []
-devolver ((pessoa, livro):t) p l
-	| pessoa == p && livro == l = t
-	| otherwise = (pessoa, livro):(devolver t p l)
+--devolver :: BancoDados -> Pessoa -> Livro -> BancoDados
+--devolver [] p l = []
+--devolver ((pessoa, livro):t) p l
+--	| pessoa == p && livro == l = t
+--	| otherwise = (pessoa, livro):(devolver t p l)
 
 membro :: [Int] -> Int -> Bool
-membro ls m = (length [x | x <- ls, x == m]) > 0
+membro ls m = [m] == [x | x <- ls, x == m]
+
+
+livros :: BancoDados -> Pessoa -> [Livro]
+livros bd p = [ livro | (pessoa, livro) <- bd, pessoa==p]
+
+emprestimos :: BancoDados -> Livro -> [Pessoa]
+emprestimos bd l = [pessoa | (pessoa, livro) <- bd, livro==l]
+
+emprestado :: BancoDados -> Livro -> Bool
+emprestado bd l = [l] == [ livro | (pessoa, livro) <- bd, livro==l]
+
+qtdEmprestimos :: BancoDados -> Pessoa -> Int
+qtdEmprestimos bd p = length [ livro | (pessoa, livro) <- bd, pessoa==p]
+
+devolver :: BancoDados -> Pessoa -> Livro -> BancoDados
+devolver bd p l = [ (pessoa,livro) | (pessoa, livro) <- bd, not(pessoa == p) || not(livro == l) ]
+
+quicksort :: [Int] -> [Int]
+quicksort [] = []
+quicksort (h:t) = quicksort([x | x <- t, x <= h]) ++ [h] ++ quicksort([x | x <- t, x > h])
