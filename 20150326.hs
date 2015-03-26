@@ -1,26 +1,21 @@
 -- TRABALHO
-type Hash a b = [(a,b)]
+type Hash = [(Int,Int)]
 
-myHash :: Hash String Int
-myHash = [("tomer", 5), ("joao", 7)]
+myHash :: Hash
+myHash = [(0, 0), (1, 2) , (2,4) , (3,6), (4,8)]
 
-hasKey :: Eq k => Hash k v -> k -> Bool
-hasKey hash k = [k] == [ key | (key, value) <- hash, key == k ]
+hasKey :: Hash -> Int -> Bool
+hasKey hash k = k == fst(hash!!(mod k (length hash)))
 
-get :: Eq k => Hash k v -> k -> v
+get :: Hash -> Int -> Int
 get hash k 
-	| fst (head hash) == k = snd (head hash)
-	| otherwise = get (tail hash) k
+	| hasKey hash k = snd(hash!!(mod k (length hash)))
 
-remove :: Eq k => Hash k v -> k -> Hash k v
-remove hash k
-	| fst (head hash) == k = tail hash
-	| otherwise = (head hash):(remove (tail hash) k)
+remove :: Hash -> Int -> Hash
+remove hash k = (take (mod k (length hash)) hash) ++ [(-1,-1)] ++ drop ((mod k (length hash)) +1 ) hash
 
-put :: Eq k => Hash k v -> k -> v -> Hash k v
-put hash k v
-	| (hasKey hash k) == True = (remove hash k) ++ [(k,v)]
-	| otherwise = hash ++ [(k,v)]
+put :: Hash -> Int -> Int -> Hash
+put hash k v = (take (mod k (length hash)) hash) ++ [(k,v)] ++ drop ((mod k (length hash)) +1 ) hash
 
 removeRepetido :: Eq t => [t] -> [t]
 removeRepetido [] = []
