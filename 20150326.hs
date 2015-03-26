@@ -40,4 +40,47 @@ comparaConjuntos a b
 		sb' = length b'
 		aInB = qtdElem a' b'
 		bInA = qtdElem b' a'
+		
+-- EXERCICIOS DA AULA
+
+take' :: Int -> [t] -> [t]
+take' 0 _ = []
+take' _ [] = []
+take' n (a:as) = a:take' (n-1) as 
+
+drop' :: Int -> [t] -> [t]
+drop' 0 a = a
+drop' _ [] = []
+drop' n (a:as)
+	| length as >= n = drop' n as 
+	| otherwise = as
+
+takeWhile' :: (t -> Bool) -> [t] -> [t]
+takeWhile _ [] = []
+takeWhile' f (a:as)
+	| f a = a:takeWhile' f as
+	| otherwise = []
+	
+dropWhile' :: (t -> Bool) -> [t] -> [t]
+dropWhile' _ [] = []
+dropWhile' f (a:as)
+	| not(f a) = as
+	| otherwise = dropWhile' f as
+
+order :: Ord t => [t] -> [t]
+order [] = []
+order (a:as) = order([x | x <- as, x < a]) ++ a:[x | x <- as, x == a] ++ order([x | x <- as, x > a])
+
+agrupar :: Eq t => [[t]] -> [(t,Int)]
+agrupar [] = []
+agrupar (a:as) = (a, (count a co) + 1):(agrupar [x | x <- co, not(x == a)])
+	where
+		co = concat' a:as
+
+concat' :: [[t]] -> [t]
+concat' [] = []
+concat' (a:as) = a++concat'(as)
+
+count :: Eq t => t -> [t] -> Int
+count a ls = length [ x | x <- ls, x == a]
 
