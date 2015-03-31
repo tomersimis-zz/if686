@@ -118,3 +118,46 @@ filtroMediana matrix n = pvt_filtroMediana matrix 1 1 n []
 
 baseMatrix :: [[Int]] 
 baseMatrix = [[1,2,3],[4,5,6], [7,8,9]]
+
+-- EXERCICIO
+afd :: String -> [Int] -> [(Int, Int, Char)] -> Int -> [Int] -> Bool
+afd [] _ _ _ _ = False
+afd input states trans initial acc = simulate states trans acc [(input,initial)] 
+
+simulate :: [Int] -> [(Int, Int, Char)] -> [Int] -> [(String,Int)] -> Bool
+simulate _ _ _ [] = False
+simulate states trans acc ((input, actual):as)
+	| ((input, actual):as) == [] = False
+	| [actual] == [x | x <- acc, x == actual] = True
+	| otherwise = simulate states trans acc ([(tail input, y) | (x,y,z) <- trans, x == actual && z == head input] ++ as) 
+
+--
+
+tab :: [(Char, Int)]
+tab = [('0', 0), ('1', 1), ('2', 2), ('3', 3), ('4', 4), ('5', 5), ('6', 6), ('7', 7), ('8', 8), ('9', 9), ('A', 10), ('B', 11), ('C', 12), ('D', 13), ('E', 14), ('F', 15)]
+
+hexToDec :: Char -> [(Char, Int)] -> Int
+hexToDec n tab = head [dec | (hex,dec) <- tab, n == hex]
+
+decToHex :: Int -> [(Char, Int)] -> Char 
+decToHex n tab = head [hex | (hex,dec) <- tab, n == dec]
+
+sumList :: [Int] -> Int
+sumList [] = 0
+sumList (a:as) = a + sumList as
+
+hexToDecList :: [Char] -> [(Char, Int)] -> [Int]
+hexToDecList ls tab = [hexToDec x tab | x <- ls]
+
+somatorioHexadecimal :: [Char] -> [(Char, Int)] -> [Char]
+somatorioHexadecimal ls tab = reverse (somatorioHexadecimal' (sumList (hexToDecList ls tab)) tab)
+
+somatorioHexadecimal' :: Int -> [(Char,Int)] -> [Char]
+somatorioHexadecimal' n tab
+	| n >= 16 = (decToHex m tab):somatorioHexadecimal' d tab
+	| otherwise = [decToHex n tab]
+		where
+			d = n `div` 16
+			m = n `mod` 16
+
+
