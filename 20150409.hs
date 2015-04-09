@@ -1,3 +1,5 @@
+
+import Data.Char (ord)
 -- 1
 -- Lista dos rotulos  +  Lista de arestas
 data Graph t = Graph [t] [(t, t, Int)]
@@ -33,3 +35,47 @@ isVisited ls n = (length [x | x <- ls, x == n]) > 0
 
 g :: Graph Char
 g = Graph ['a', 'b', 'c', 'd'] [('a', 'b', 2), ('a', 'c', 3), ('c', 'd', 9), ('b', 'a', 0)]
+
+
+-- AULA
+getRoots :: Floating t => [t] -> [t]
+getRoots ls = map sqrt ls
+
+getPos :: Char -> Int
+getPos c
+	| c >= 'A' && c <= 'Z' = ord(c) - ord('A') + 1
+	| c >= 'a' && c <= 'z' = ord(c) - ord('a') + 1
+	| otherwise = -1
+
+posicaoAlfabeto :: String -> [Int]
+posicaoAlfabeto ls = map getPos ls
+
+myMap :: (t -> u) -> [t] -> [u]
+myMap f ls = [f x | x <- ls]
+
+member :: Eq t => t -> [t] -> Bool
+member f ls = foldr (||) False (map (==f) ls)
+
+
+union :: [t] -> [t] -> [t]
+union a b = foldr (:) [] a ++ foldr (:) [] b -- @_@
+
+getSumOfChars :: [String] -> [Int]
+getSumOfChars ls = map (foldr (+) 0) (map posicaoAlfabeto ls)
+
+data Tree t = NilT | Node t (Tree t) (Tree t)
+	deriving (Show)
+
+t :: Tree Int
+t = Node 7 (Node 4 NilT NilT) (Node 13 NilT NilT)
+
+insert :: Ord t => Tree t -> t -> Tree t
+insert (NilT) el = Node el NilT NilT
+insert (Node a left right) el
+	| el >= a = Node a left (insert right el)
+	| otherwise = Node a (insert left el) right
+
+{- DOESN'T WORK
+criarArvore :: Ord t => [t] -> (Tree t -> t -> Tree t) -> Tree t
+criarArvore ls f = foldr f NilT ls
+-}
