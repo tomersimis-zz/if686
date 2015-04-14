@@ -29,7 +29,15 @@ filterTree' f (Node n left right)
 	| otherwise = NilT
 
 filterTree :: (t -> Bool) -> Tree t -> [Tree t]
-filterTree _ NilT = []
-filterTree f (Node n left right)
-	| f n = [(Node n  (filterTree' f left) (filterTree' f right))]
-	| otherwise = [(filterTree' f left)] ++ [(filterTree' f right)]
+filterTree f tree = (filterNodes [(filterTree' f x) | x <- (getNodes f tree)]) ++ [filterTree' f tree]
+
+getNodes :: (t -> Bool) -> Tree t -> [Tree t]
+getNodes _ NilT = []
+getNodes f (Node n left right)
+	| f n = (getNodes f left) ++ (getNodes f right)
+	| otherwise = [left] ++ [right] ++ (getNodes f left) ++ (getNodes f right)
+
+filterNodes :: [Tree t] -> [Tree t]
+filterNodes [] = []
+filterNodes ((NilT):as) = filterNodes as
+filterNodes ((Node n left right):as) = [(Node n left right)] ++ filterNodes as
