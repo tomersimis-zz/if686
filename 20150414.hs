@@ -41,3 +41,33 @@ filterNodes :: [Tree t] -> [Tree t]
 filterNodes [] = []
 filterNodes ((NilT):as) = filterNodes as
 filterNodes ((Node n left right):as) = [(Node n left right)] ++ filterNodes as
+
+
+-- AULA
+filterNegSum :: Int -> [[Int]] -> [[Int]]
+filterNegSum v ls = filter (\x -> (foldr (+) 0 x) > v) (ls)
+
+isElement :: Int -> [Int] -> Bool
+isElement x ls = length ([y | y <- ls, y == x]) > 0
+
+inter :: [Int] -> [Int] -> [Int]
+inter a b = filter (\x -> isElement x b) a
+
+diff :: [Int] -> [Int] -> [Int]
+diff a b = filter (\x -> not(isElement x b)) a
+
+--mapFold :: (t -> u) -> (t -> t -> t) -> t -> [[t]] -> [t]
+--mapFold fMap fFold iFold ls = [fMap x | x <- (foldr' fFold iFold ls)]
+
+--foldr' :: (t -> t -> t) -> t -> [t] -> t
+--foldr' _ i [] = i
+--foldr' f i (a:as) = f a (foldr' f i as)
+
+mapFilter :: (t -> Bool) -> [[t]] -> [[t]]
+mapFilter f ls = [filter' f x | x <- ls]  
+
+filter' :: (t -> Bool) -> [t] -> [t]
+filter' _ [] = []
+filter' f (a:as)
+	| f a  = a:filter' f as
+	| otherwise = filter' f as
