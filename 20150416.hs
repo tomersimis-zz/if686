@@ -17,3 +17,32 @@ smaller (a:as) act
 quicksort :: (Ord a) => [a] -> [a]
 quicksort [] = []
 quicksort (a:as) = quicksort(filter (<a) as) ++ (a:(filter (==a) as)) ++ quicksort(filter (>a) as)
+
+
+-- AULA
+
+-- PARA FINS DE COMPILACAO
+--f' :: (Num u, Num t) => u -> t -> v
+--f' = (\a b -> f b a) 
+
+getFirsts :: ([(t,t)] -> [t])
+getFirsts = (\x -> [y | (y,z) <- x])
+
+getBigger :: (Num t) => ([[t]] -> Int -> [[t]])
+getBigger = (\x y -> [z | z <- x, (length z) > y])
+
+remDupl :: (Eq t) => ([[t]] -> [t])
+remDupl = (\x -> [y | y <- (foldr unite [] x) ]) 
+
+unite :: (Eq t) => [t] -> [t] -> [t]
+unite [] b = b
+unite a [] = a
+unite (a:as) b
+	| a `elem` b = unite as b
+	| otherwise = a:(unite as b)
+
+sumAll :: (Num t) => t -> ([t] -> [t])
+sumAll v = map (+v)
+
+maxAll :: Ord t => ([t] -> t)
+maxAll = (\x -> foldr (max) (minimum x) x)
