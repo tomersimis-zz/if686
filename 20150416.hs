@@ -46,3 +46,10 @@ sumAll v = map (+v)
 
 maxAll :: Ord t => ([t] -> t)
 maxAll = (\x -> foldr (max) (minimum x) x)
+
+combine :: [Int] -> ([Int] -> [(Int, Int)])
+combine ls = combine' ls
+
+combine' :: [Int] -> [Int] -> [(Int, Int)]
+combine' [] _ = []
+combine' (a:as) ls = [(a, x) | x <- ls] ++ (combine' as ls)
